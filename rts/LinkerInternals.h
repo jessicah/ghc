@@ -319,7 +319,8 @@ ObjectCode* mkOc( pathchar *path, char *image, int imageSize,
 || defined(linux_android_HOST_OS) \
 || defined(freebsd_HOST_OS) || defined(kfreebsdgnu_HOST_OS) \
 || defined(dragonfly_HOST_OS) || defined(netbsd_HOST_OS) \
-|| defined(openbsd_HOST_OS) || defined(gnu_HOST_OS)
+|| defined(openbsd_HOST_OS) || defined(gnu_HOST_OS) \
+|| defined(haiku_HOST_OS)
 #  define OBJFORMAT_ELF
 #  include "linker/ElfTypes.h"
 #elif defined (mingw32_HOST_OS)

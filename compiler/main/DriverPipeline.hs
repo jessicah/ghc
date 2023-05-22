@@ -2302,9 +2302,11 @@ joinObjectFiles dflags o_files output_fn = do
       ldIsGnuLd = sLdIsGnuLd mySettings
       osInfo = platformOS (targetPlatform dflags)
       ld_r args cc = SysTools.runLink dflags ([
-                       SysTools.Option "-nostdlib",
-                       SysTools.Option "-Wl,-r"
+                       SysTools.Option "-nostdlib"
                      ]
+                     ++ (if osInfo == OSHaiku
+                          then [SysTools.Option "-r"]
+                          else [SysTools.Option "-Wl,-r"])
                         -- See Note [No PIE while linking] in DynFlags
                      ++ (if sGccSupportsNoPie mySettings
                           then [SysTools.Option "-no-pie"]

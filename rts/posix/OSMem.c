@@ -245,6 +245,10 @@ my_mmap (void *addr, W_ size, int operation)
         // See Trac #7500.
         ret = linux_retry_mmap(operation, size, ret, addr, prot, flags);
     }
+# elif defined(haiku_HOST_OS)
+    // Retry without address constraint
+    if (ret == (void *)-1 && errno == EFAULT)
+        ret = mmap(0, size, prot, MAP_ANON | MAP_PRIVATE, -1, 0);
 # endif
     if (ret == MAP_FAILED) {
         return NULL;

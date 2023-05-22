@@ -4530,6 +4530,7 @@ default_PIC platform =
                                          -- always generate PIC. See
                                          -- #10597 for more
                                          -- information.
+    (OSHaiku, _)           -> [Opt_PIC]
     _                      -> []
 
 -- We usually want to use RPath, except on macOS (OSDarwin).  On recent macOS
@@ -5545,6 +5546,9 @@ picCCOpts dflags = pieOpts ++ picOpts
   where
     picOpts =
       case platformOS (targetPlatform dflags) of
+      OSHaiku
+       | gopt Opt_PIC dflags -> ["-fPIC", "-U__PIC__", "-D__PIC__"]
+       | otherwise -> []
       OSDarwin
           -- Apple prefers to do things the other way round.
           -- PIC is on by default.
@@ -5764,6 +5768,10 @@ makeDynFlagsConsistent dflags
  | not (osElfTarget os) && gopt Opt_PIE dflags
     = loop (gopt_unset dflags Opt_PIE)
            "Position-independent only supported on ELF platforms"
+ | os == OSHaiku &&
+   not (gopt Opt_PIC dflags)
+    = loop (gopt_set dflags Opt_PIC)
+           "Enabling -fPIC as it is always on for this platform"
  | os == OSDarwin &&
    arch == ArchX86_64 &&
    not (gopt Opt_PIC dflags)
