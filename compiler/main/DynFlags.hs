@@ -4660,6 +4660,7 @@ default_PIC platform =
     -- be built with -fPIC.
     -- See #15275, #18892
     (OSDarwin,  ArchAArch64) -> [Opt_PIC]
+    (OSHaiku, _)             -> [Opt_PIC]
     (OSLinux,   ArchAArch64) -> [Opt_PIC, Opt_ExternalDynamicRefs]
     (OSLinux,   ArchARM {})  -> [Opt_PIC, Opt_ExternalDynamicRefs]
     (OSOpenBSD, ArchX86_64)  -> [Opt_PIC] -- Due to PIE support in
@@ -5534,6 +5535,9 @@ picCCOpts dflags = pieOpts ++ picOpts
   where
     picOpts =
       case platformOS (targetPlatform dflags) of
+      OSHaiku
+       | gopt Opt_PIC dflags -> ["-fPIC", "-U__PIC__", "-D__PIC__"]
+       | otherwise -> []
       OSDarwin
           -- Apple prefers to do things the other way round.
           -- PIC is on by default.
@@ -5742,6 +5746,10 @@ makeDynFlagsConsistent dflags
  | not (osElfTarget os) && gopt Opt_PIE dflags
     = loop (gopt_unset dflags Opt_PIE)
            "Position-independent only supported on ELF platforms"
+ | os == OSHaiku &&
+   not (gopt Opt_PIC dflags)
+    = loop (gopt_set dflags Opt_PIC)
+           "Enabling -fPIC as it is always on for this platform"
  | os == OSDarwin &&
    arch == ArchX86_64 &&
    not (gopt Opt_PIC dflags)
