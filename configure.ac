@@ -601,10 +601,10 @@ FP_CPP_CMD_WITH_ARGS(HaskellCPPCmd, HaskellCPPArgs)
 AC_SUBST([HaskellCPPCmd])
 AC_SUBST([HaskellCPPArgs])
 
-FP_SET_CFLAGS_C99([CC],[CFLAGS],[CPPFLAGS])
-FP_SET_CFLAGS_C99([CC_STAGE0],[CONF_CC_OPTS_STAGE0],[CONF_CPP_OPTS_STAGE0])
-FP_SET_CFLAGS_C99([CC],[CONF_CC_OPTS_STAGE1],[CONF_CPP_OPTS_STAGE1])
-FP_SET_CFLAGS_C99([CC],[CONF_CC_OPTS_STAGE2],[CONF_CPP_OPTS_STAGE2])
+#FP_SET_CFLAGS_C99([CC],[CFLAGS],[CPPFLAGS])
+#FP_SET_CFLAGS_C99([CC_STAGE0],[CONF_CC_OPTS_STAGE0],[CONF_CPP_OPTS_STAGE0])
+#FP_SET_CFLAGS_C99([CC],[CONF_CC_OPTS_STAGE1],[CONF_CPP_OPTS_STAGE1])
+#FP_SET_CFLAGS_C99([CC],[CONF_CC_OPTS_STAGE2],[CONF_CPP_OPTS_STAGE2])
 
 dnl ** Which ld to use
 dnl --------------------------------------------------------------
@@ -754,20 +754,21 @@ dnl --------------------------------------------------------------
 
 dnl ** Copy the files from the "fs" utility into the right folders.
 dnl --------------------------------------------------------------
-AC_MSG_NOTICE([Creating links for in-tree file handling routines])
+AC_MSG_NOTICE([Creating links for in-tree file handling routines.])
 if test "$HostOS" = "haiku"
 then
-  cp -f utils/fs/fs.* utils/lndir/
-  cp -f utils/fs/fs.* utils/unlit/
-  cp -f utils/fs/fs.* rts/
-  cp -f utils/fs/fs.h libraries/base/include/
-  cp -f utils/fs/fs.c libraries/base/cbits/
+    dnl Haiku's BFS doesn't support hard links
+    cp -f utils/fs/fs.* utils/lndir/
+    cp -f utils/fs/fs.* utils/unlit/
+    cp -f utils/fs/fs.* rts/
+    cp -f utils/fs/fs.h libraries/base/include/
+    cp -f utils/fs/fs.c libraries/base/cbits/
 else
-  ln -f utils/fs/fs.* utils/lndir/
-  ln -f utils/fs/fs.* utils/unlit/
-  ln -f utils/fs/fs.* rts/
-  ln -f utils/fs/fs.h libraries/base/include/
-  ln -f utils/fs/fs.c libraries/base/cbits/
+    ln -f utils/fs/fs.* utils/lndir/
+    ln -f utils/fs/fs.* utils/unlit/
+    ln -f utils/fs/fs.* rts/
+    ln -f utils/fs/fs.h libraries/base/include/
+    ln -f utils/fs/fs.c libraries/base/cbits/
 fi
 AC_MSG_NOTICE([Routines in place. Packages can now be build normally.])
 
@@ -1381,7 +1382,7 @@ dnl ** Use MMAP in the runtime linker?
 dnl --------------------------------------------------------------
 
 case ${TargetOS} in
-    linux|linux-android|freebsd|dragonfly|netbsd|openbsd|kfreebsdgnu|gnu|solaris2)
+    linux|linux-android|freebsd|dragonfly|netbsd|openbsd|kfreebsdgnu|gnu|solaris2|haiku)
         RtsLinkerUseMmap=1
         ;;
     darwin|ios|watchos|tvos)

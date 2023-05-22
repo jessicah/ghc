@@ -4,7 +4,8 @@
 || defined(linux_android_HOST_OS) \
 || defined(freebsd_HOST_OS) || defined(kfreebsdgnu_HOST_OS) \
 || defined(dragonfly_HOST_OS) || defined(netbsd_HOST_OS) \
-|| defined(openbsd_HOST_OS) || defined(gnu_HOST_OS)
+|| defined(openbsd_HOST_OS) || defined(gnu_HOST_OS) \
+|| defined(haiku_HOST_OS)
 
 // It is essential that this is included before any <elf.h> is included. <elf.h>
 // defines R_XXX relocations, which would interfere with the COMPAT_R_XXX
