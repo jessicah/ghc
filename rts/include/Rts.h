@@ -166,7 +166,7 @@ void _warnFail(const char *filename, unsigned int linenum);
     do { (void) sizeof(predicate); } while(0)
 #endif /* DEBUG */
 
-#if __STDC_VERSION__ >= 201112L
+#if __STDC_VERSION__ >= 201112L && !defined(__HAIKU__)
 #define GHC_STATIC_ASSERT(x, msg) static_assert((x), msg)
 #else
 #define GHC_STATIC_ASSERT(x, msg)
